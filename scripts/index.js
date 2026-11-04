@@ -1,5 +1,5 @@
 //Import de firebase
-import {app, analytics} from './../protected/firebase_config.js';
+import {app, db} from './../protected/firebase_config.js';
 
 //app VNotes
 const crearNota = document.getElementById("crearNota");
@@ -10,9 +10,7 @@ const headerHeight = document.querySelector("header").offsetHeight;
 
 //Movimiento de arrastre para boton crear notas
 crearNota.addEventListener("touchmove", (e)=>{
-   
     let toque = e.touches[0];
-
     //obtenemos ancho y alto del boton
     const anchoBoton = crearNota.offsetWidth;
     const altoBoton = crearNota.offsetHeight;
@@ -27,3 +25,6 @@ crearNota.addEventListener("touchmove", (e)=>{
     crearNota.style.top = posicionY + "px";
 
 });
+
+//Añadimos funcionalidad al boton crear notas
+
