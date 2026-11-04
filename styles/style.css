@@ -1,0 +1,96 @@
+:root{
+    /*Header*/
+    --bg-header: rgb(112, 69, 38);
+    --color-header: rgb(245, 235, 220);   /* crema claro, contraste sobre marrón */
+
+    /*Main (pizarra)*/
+    --bg-main: rgb(241, 237, 234);
+    
+
+    /*Button*/
+    --bg-button: rgb(212, 140, 60);       /* ámbar cálido, resalta sobre pizarra */
+    --bg-button-hover: rgb(230, 158, 78);
+    --bg-button-active: rgb(190, 120, 45);
+    --color-button: rgb(45, 25, 10);
+
+    /*Sombras*/
+    --shadow-suave: 0 4px 10px rgba(0,0,0,0.12);
+    --shadow-hover: 0 6px 14px rgba(0,0,0,0.18);
+}
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body{
+    height: 100%;
+}
+
+body{
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    display: flex;
+    flex-direction: column;
+}
+
+header{
+    background-color: var(--bg-header);
+    color: var(--color-header);
+
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+header h1{
+    font-size: 1.4rem;
+    letter-spacing: 0.5px;
+    font-weight: bold;
+}
+
+main{
+    background-color: var(--bg-main);
+    background-size: 22px 22px;
+
+    flex: 1;                 /* ocupa lo que queda, no 100vh */
+    position: relative;      /* ancla el botón dentro del main */
+    overflow: hidden;
+}
+
+#crearNota{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);   /* centrado real */
+
+    padding: 12px 24px;
+    border: none;
+    border-radius: 999px;
+
+    background-color: var(--bg-button);
+    color: var(--color-button);
+
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+
+    cursor: grab;                       /* indica que es arrastrable */
+    box-shadow: var(--shadow-suave);
+    user-select: none;                  /* evita seleccionar texto al arrastrar */
+}
+
+#crearNota:hover{
+    background-color: var(--bg-button-hover);
+    box-shadow: var(--shadow-hover);
+}
+
+#crearNota:active{
+    background-color: var(--bg-button-active);
+    cursor: grabbing;
+    transform: translate(-50%, -50%) scale(0.97);
+}
