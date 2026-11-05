@@ -64,25 +64,23 @@ main{
 
 #crearNota{
     position: absolute;
-    top: 50%;
-    left: 50%;
+    
     
     padding: 12px 24px;
     border: none;
-    border-radius: 999px;
+    border-radius: 100px;
 
     background-color: var(--bg-button);
     color: var(--color-button);
 
     font-size: 1rem;
-    font-weight: 600;
+    font-weight: bold;
     letter-spacing: 0.3px;
 
     cursor: grab;                       /* indica que es arrastrable */
     box-shadow: var(--shadow-suave);
     user-select: none;  /* evita seleccionar texto al arrastrar */
 
-    flex: 1;
 }
 
 #crearNota:hover{
@@ -93,5 +91,5 @@ main{
 #crearNota:active{
     background-color: var(--bg-button-active);
     cursor: grabbing;
-    transform: translate(-50%, -50%) scale(0.97);
+   
 }

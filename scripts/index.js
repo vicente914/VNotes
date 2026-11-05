@@ -27,4 +27,3 @@ crearNota.addEventListener("touchmove", (e)=>{
 });
 
 //Añadimos funcionalidad al boton crear notas
-
