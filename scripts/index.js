@@ -6,7 +6,7 @@ const crearNota = document.getElementById("crearNota");
 
 //Evita que el padding del header afecte a la altura del boton al arrastrarlo
 const headerHeight = document.querySelector("header").offsetHeight;
-
+let arrastrando;
 
 //Movimiento de arrastre para boton crear notas
 crearNota.addEventListener("touchmove", (e)=>{
@@ -24,6 +24,19 @@ crearNota.addEventListener("touchmove", (e)=>{
     crearNota.style.left = posicionX + "px";
     crearNota.style.top = posicionY + "px";
 
+    //evitamos que touchend involuntarios al final del touchmove
+    arrastrando = true;
+    
+
 });
 
 //Añadimos funcionalidad al boton crear notas
+crearNota.addEventListener("touchend", (e)=>{
+    //evitamos touchend involuntarios al final del touchmove
+    if(arrastrando){
+        arrastrando = false;
+        return;
+    }
+
+    console.log('crearNota');
+});
