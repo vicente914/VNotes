@@ -3,6 +3,7 @@ import {app, db} from './../protected/firebase_config.js';
 
 //APP VNOTES
 
+//DATOS NECESARIOS
 const crearNota = document.getElementById("crearNota");
 const main = document.querySelector("main");
 let idNota = 0;
@@ -25,6 +26,11 @@ const colorRojo = document.getElementById("colorRojo");
 //Evita que el padding del header afecte a la altura del boton al arrastrarlo
 const headerHeight = document.querySelector("header").offsetHeight;
 let arrastrando;
+
+
+
+
+/*FUNCIONES Y EVENTOS*/
 
 //Movimiento de arrastre para boton crear notas
 crearNota.addEventListener("touchmove", (e)=>{
@@ -60,6 +66,7 @@ function crearNuevaNota(){
     nota.className = `notas ${colorSeleccionado}`;
     nota.textContent = texto;
     main.appendChild(nota);
+    hacerArrastrable(nota);
 
     panelNota.classList.add("oculto");
     textoNota.value = "";
@@ -117,4 +124,26 @@ function marcarColor(color){
 
     //se lo asignamos al boton que se haya elegido
     color.classList.add("seleccionado");
+}
+
+
+//Movimiento de arrastre para cada nota
+function hacerArrastrable(nota){
+    //distancia entre el dedo y la esquina de la nota
+    let offsetX = 0;
+    let offsetY = 0;
+
+    nota.addEventListener("touchstart", (e)=>{
+        let toque = e.touches[0];
+        //guardamos donde ha tocado el dedo dentro de la nota, para que no salte al centro
+        offsetX = toque.clientX - nota.offsetLeft;
+        offsetY = toque.clientY - headerHeight - nota.offsetTop;
+    });
+
+    nota.addEventListener("touchmove", (e)=>{
+        let toque = e.touches[0];
+        //posicion del dedo menos el punto donde agarramos la nota
+        nota.style.left = (toque.clientX - offsetX) + "px";
+        nota.style.top = (toque.clientY - headerHeight - offsetY) + "px";
+    });
 }
