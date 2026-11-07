@@ -3,6 +3,8 @@ import {app, db} from './../protected/firebase_config.js';
 
 //app VNotes
 const crearNota = document.getElementById("crearNota");
+const main = document.querySelector("main");
+let idNota = 0;
 
 //Evita que el padding del header afecte a la altura del boton al arrastrarlo
 const headerHeight = document.querySelector("header").offsetHeight;
@@ -30,6 +32,18 @@ crearNota.addEventListener("touchmove", (e)=>{
 
 });
 
+
+function crearNuevaNota(){
+    idNota++;
+    const coloresDisponibles = ["rojo", "azul", "verde", "amarillo"];
+    const nota = document.createElement("div");
+    nota.id = `nota-${idNota}`;
+    nota.className = "notas";
+    nota.innerHTML = "Hola soy una nota";
+    main.appendChild(nota);
+    
+}
+
 //Añadimos funcionalidad al boton crear notas
 crearNota.addEventListener("touchend", (e)=>{
     //evitamos touchend involuntarios al final del touchmove
@@ -38,5 +52,5 @@ crearNota.addEventListener("touchend", (e)=>{
         return;
     }
 
-    console.log('crearNota');
+    crearNuevaNota();
 });
