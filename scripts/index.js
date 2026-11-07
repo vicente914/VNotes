@@ -1,10 +1,26 @@
 //Import de firebase
 import {app, db} from './../protected/firebase_config.js';
 
-//app VNotes
+//APP VNOTES
+
 const crearNota = document.getElementById("crearNota");
 const main = document.querySelector("main");
 let idNota = 0;
+
+/*Pantalla oculta que se muestra al crear una nota
+te deja escoger entre 4 colores y escribir el texto para tu nota*/
+const panelNota = document.getElementById("panelNota");
+const textoNota = document.getElementById("textoNota");
+const colores = document.getElementById("colores");
+const confirmarNota = document.getElementById("confirmarNota");
+const cancelarNota = document.getElementById("cancelarNota");
+let colorSeleccionado = "amarillo";
+
+/*Color de cada boton*/
+const colorAmarillo = document.getElementById("colorAmarillo");
+const colorAzul = document.getElementById("colorAzul");
+const colorVerde = document.getElementById("colorVerde");
+const colorRojo = document.getElementById("colorRojo");
 
 //Evita que el padding del header afecte a la altura del boton al arrastrarlo
 const headerHeight = document.querySelector("header").offsetHeight;
@@ -34,14 +50,19 @@ crearNota.addEventListener("touchmove", (e)=>{
 
 
 function crearNuevaNota(){
+    const texto = textoNota.value;
+    if(!texto) return; //Si la nota esta vacia, no se crea
+
+
     idNota++;
-    const coloresDisponibles = ["rojo", "azul", "verde", "amarillo"];
     const nota = document.createElement("div");
     nota.id = `nota-${idNota}`;
-    nota.className = "notas";
-    nota.innerHTML = "Hola soy una nota";
+    nota.className = `notas ${colorSeleccionado}`;
+    nota.textContent = texto;
     main.appendChild(nota);
-    
+
+    panelNota.classList.add("oculto");
+    textoNota.value = "";
 }
 
 //Añadimos funcionalidad al boton crear notas
@@ -52,5 +73,22 @@ crearNota.addEventListener("touchend", (e)=>{
         return;
     }
 
-    crearNuevaNota();
+    panelNota.classList.remove("oculto");
+});
+
+//añadimos funcionalidades para escoger color para la nota
+colorAmarillo.addEventListener("click", ()=>{
+    colorSeleccionado = "amarillo";
+});
+
+colorAzul.addEventListener("click", ()=>{
+    colorSeleccionado = "azul";
+});
+
+colorVerde.addEventListener("click", ()=>{
+    colorSeleccionado = "verde";
+});
+
+colorRojo.addEventListener("click", ()=>{
+    colorSeleccionado = "rojo";
 });

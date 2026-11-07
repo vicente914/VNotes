@@ -13,6 +13,12 @@
     --bg-button-active: rgb(190, 120, 45);
     --color-button: rgb(45, 25, 10);
 
+    /*Colores opcion para notas*/
+    --nota-amarillo: #ffec99;
+    --nota-rojo: #ffa8a8;
+    --nota-verde: #b2f2bb;
+    --nota-azul: #a5d8ff;
+
     /*Sombras*/
     --shadow-suave: 0 4px 10px rgba(0,0,0,0.12);
     --shadow-hover: 0 6px 14px rgba(0,0,0,0.18);
@@ -102,4 +108,95 @@ main{
     background-color: rgb(255, 236, 153);
     color: rgb(45, 25, 10);
     border-radius: 6px;
+}
+
+/* Colores: sirven para los círculos del panel y para las notas */
+.amarillo{ 
+    background-color: var(--nota-amarillo); 
+}
+
+.azul{
+    background-color: var(--nota-azul);
+}
+.verde{
+    background-color: var(--nota-verde);
+}
+
+.rojo{
+    background-color: var(--nota-rojo);
+}
+
+/* Evita el scroll del navegador al arrastrar */
+.notas{
+    word-wrap: break-word;
+}
+
+/* Panel */
+#panelNota{
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+
+#panelNota.oculto{
+    display: none;
+}
+
+.panel-contenido{
+    background-color: white;
+    width: 90%;
+    max-width: 360px;
+    padding: 20px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.panel-contenido textarea{
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 1rem;
+    resize: none;
+}
+
+#colores{
+    display: flex;
+    gap: 14px;
+}
+
+.color{
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+}
+
+.color.seleccionado{
+    border-color: var(--color-button);
+    transform: scale(1.15);
+}
+
+.panel-botones{
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.panel-botones button{
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+#confirmarNota{
+    background-color: var(--bg-button);
+    color: var(--color-button);
 }

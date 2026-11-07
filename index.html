@@ -16,5 +16,23 @@
         <button id="crearNota">Crear Nota</button>
     </main>
 
+    <div id="panelNota" class="oculto">
+        <div class="panel-contenido">
+            <h2>Nueva nota</h2>
+            <textarea id="textoNota" placeholder="Escribe tu nota..." rows="4"></textarea>
+
+            <div id="colores">
+                <button type="button" id= "colorAmarillo" class="color amarillo seleccionado" data-color="amarillo"></button>
+                <button type="button" id="colorAzul" class="color azul" data-color="azul"></button>
+                <button type="button" id="colorVerde" class="color verde" data-color="verde"></button>
+                <button type="button" id="colorRojo" class="color rojo" data-color="rojo"></button>
+            </div>
+
+            <div class="panel-botones">
+                <button type="button" id="cancelarNota">Cancelar</button>
+                <button type="button" id="confirmarNota">Crear</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
