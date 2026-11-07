@@ -1,6 +1,6 @@
 //Import de firebase
 import {app, db} from './../protected/firebase_config.js';
-
+import { collection, doc, setDoc, updateDoc, getDocs } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
 //APP VNOTES
 
 //DATOS NECESARIOS
@@ -70,6 +70,8 @@ function crearNuevaNota(){
 
     panelNota.classList.add("oculto");
     textoNota.value = "";
+
+    guardarNotaEnFirebase(nota, texto);
 }
 
 //Añadimos funcionalidad al boton crear notas
@@ -146,4 +148,52 @@ function hacerArrastrable(nota){
         nota.style.left = (toque.clientX - offsetX) + "px";
         nota.style.top = (toque.clientY - headerHeight - offsetY) + "px";
     });
+
+    nota.addEventListener("touchend", ()=>{
+        updateDoc(doc(db, "Notas", nota.id), {
+            coordenadaX: nota.offsetLeft,
+            coordenadaY: nota.offsetTop
+        });
+    });
 }
+
+//Funcionalidad que nos permitira guardar las notaas creadas y su contenido
+//en nuestra base de datos
+async function guardarNotaEnFirebase(nota, texto){
+    //Id unico de firestore
+    const referencia = doc(collection(db, "Notas"));
+    nota.id = referencia.id; //asi la nota tiene el mismo id que en la base de datos
+
+    //Guardamos la nota con cada uno de sus campos
+    await setDoc(referencia, {
+        id: referencia.id,
+        texto: texto,
+        color: colorSeleccionado,
+        coordenadaX: nota.offsetLeft,
+        coordenadaY: nota.offsetTop,
+        fechaCreacion: Date.now()
+    });
+}
+
+
+//funcionalidad que al abrir la pagina, leera las notas guardadas en la base de datos
+//y las cargara en la pagina
+async function cargarNotas(){
+    const resultado = await getDocs(collection(db, "Notas"));
+
+    resultado.forEach((documento)=>{
+        const datos = documento.data();
+
+        const nota = document.createElement("div");
+        nota.id = datos.id;
+        nota.className = `notas ${datos.color}`;
+        nota.textContent = datos.texto;
+        nota.style.left = datos.coordenadaX + "px";
+        nota.style.top = datos.coordenadaY + "px";
+        main.appendChild(nota);
+
+        hacerArrastrable(nota);
+    });
+}
+
+cargarNotas();
