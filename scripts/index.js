@@ -48,7 +48,7 @@ crearNota.addEventListener("touchmove", (e)=>{
 
 });
 
-
+//Creamos la nota con sus caracteristicas elegidas previamente en su configuracion
 function crearNuevaNota(){
     const texto = textoNota.value;
     if(!texto) return; //Si la nota esta vacia, no se crea
@@ -66,6 +66,7 @@ function crearNuevaNota(){
 }
 
 //Añadimos funcionalidad al boton crear notas
+//Muestra el pane de configuracion para crear tu nota
 crearNota.addEventListener("touchend", (e)=>{
     //evitamos touchend involuntarios al final del touchmove
     if(arrastrando){
@@ -77,18 +78,43 @@ crearNota.addEventListener("touchend", (e)=>{
 });
 
 //añadimos funcionalidades para escoger color para la nota
-colorAmarillo.addEventListener("click", ()=>{
+//en el panel de configuracion de la nota
+colorAmarillo.addEventListener("touchend", ()=>{
     colorSeleccionado = "amarillo";
+    marcarColor(colorAmarillo);
 });
 
-colorAzul.addEventListener("click", ()=>{
+colorAzul.addEventListener("touchend", ()=>{
     colorSeleccionado = "azul";
+    marcarColor(colorAzul);
 });
 
-colorVerde.addEventListener("click", ()=>{
+colorVerde.addEventListener("touchend", ()=>{
     colorSeleccionado = "verde";
+    marcarColor(colorVerde);
 });
 
-colorRojo.addEventListener("click", ()=>{
+colorRojo.addEventListener("touchend", ()=>{
     colorSeleccionado = "rojo";
+    marcarColor(colorRojo);
 });
+
+confirmarNota.addEventListener("touchend", crearNuevaNota);
+
+//Volvemos a ocultar el panel si deciden cancelar la nota que creaban
+cancelarNota.addEventListener("touchend", ()=>{
+    panelNota.classList.add("oculto");
+});
+
+
+//funcionalidad para que el usuario pueda ver que color ha escogido para su nota
+function marcarColor(color){
+    //quitamos el seleccionado de todos
+    colorAmarillo.classList.remove("seleccionado");
+    colorAzul.classList.remove("seleccionado");
+    colorVerde.classList.remove("seleccionado");
+    colorRojo.classList.remove("seleccionado");
+
+    //se lo asignamos al boton que se haya elegido
+    color.classList.add("seleccionado");
+}
