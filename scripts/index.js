@@ -1,12 +1,13 @@
 //Import de firebase
 import {app, db} from './../protected/firebase_config.js';
-import { collection, doc, setDoc, updateDoc, getDocs } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
+import { collection, doc, setDoc, updateDoc, getDocs, delteDoc } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
 //APP VNOTES
 
 //DATOS NECESARIOS
 const crearNota = document.getElementById("crearNota");
 const main = document.querySelector("main");
 let idNota = 0;
+let notaEditando = null;
 
 /*Pantalla oculta que se muestra al crear una nota
 te deja escoger entre 4 colores y escribir el texto para tu nota*/
@@ -66,6 +67,11 @@ function crearNuevaNota(){
     nota.className = `notas ${colorSeleccionado}`;
     nota.textContent = texto;
     main.appendChild(nota);
+
+    //para centrar la nota en el main/tablero despues de crearla
+    nota.style.left = (main.clientWidth - nota.offsetWidth) / 2 + "px";
+    nota.style.top = (main.clientHeight - nota.offsetHeight) / 2 + "px"
+
     hacerArrastrable(nota);
 
     panelNota.classList.add("oculto");
