@@ -1,6 +1,6 @@
 //Import de firebase
 import {app, db} from './../protected/firebase_config.js';
-import { collection, doc, setDoc, updateDoc, getDocs, delteDoc } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
+import { collection, doc, setDoc, updateDoc, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
 //APP VNOTES
 
 //DATOS NECESARIOS
@@ -60,6 +60,11 @@ function crearNuevaNota(){
     const texto = textoNota.value;
     if(!texto) return; //Si la nota esta vacia, no se crea
 
+     //Si venimos de un doble toque, actualizamos la nota en vez de crear otra
+    if(notaEditando){
+        guardarEdicionNota(texto);
+        return;
+    }
 
     idNota++;
     const nota = document.createElement("div");
@@ -119,6 +124,9 @@ confirmarNota.addEventListener("touchend", crearNuevaNota);
 //Volvemos a ocultar el panel si deciden cancelar la nota que creaban
 cancelarNota.addEventListener("touchend", ()=>{
     panelNota.classList.add("oculto");
+    notaEditando = null;
+    textoNota.value = "";
+
 });
 
 
@@ -141,11 +149,26 @@ function hacerArrastrable(nota){
     let offsetX = 0;
     let offsetY = 0;
 
+    //Con estos datos distinguimos entre arrastrar, swipe, doble toque
+    let inicioX = 0;
+    let inicioY = 0;
+    let tiempoInicio = 0;
+    let posicionInicialX = 0;
+    let posicionInicialY = 0;
+    let ultimoToque = 0;
+
     nota.addEventListener("touchstart", (e)=>{
         let toque = e.touches[0];
         //guardamos donde ha tocado el dedo dentro de la nota, para que no salte al centro
         offsetX = toque.clientX - nota.offsetLeft;
         offsetY = toque.clientY - headerHeight - nota.offsetTop;
+
+        //Guardamos en donde empezo el toque, cuando y donde estaba la nota
+        inicioX = toque.clientX;
+        inicioY = toque.clientY;
+        tiempoInicio = Date.now();
+        posicionInicialX = nota.offsetLeft;
+        posicionInicialY = nota.offsetTop;
     });
 
     nota.addEventListener("touchmove", (e)=>{
@@ -155,7 +178,40 @@ function hacerArrastrable(nota){
         nota.style.top = (toque.clientY - headerHeight - offsetY) + "px";
     });
 
-    nota.addEventListener("touchend", ()=>{
+    nota.addEventListener("touchend", (e)=>{
+        //Se mide lo que se ha movido el dedo y cuanto ha tardado
+        let toque = e.changedTouches[0];
+        const distanciaX = toque.clientX - inicioX;
+        const distanciaY = toque.clientY - inicioY;
+        const tiempo = Date.now() - tiempoInicio;
+        
+
+        //SWIPE: se mide con recorrido horizontal rapido y poco recorrido vertical
+        if(Math.abs(distanciaX) > 100 && Math.abs(distanciaY) < 30 && tiempo < 500){
+            if(confirm("¿Seguro que quires borrar esta nota?")){
+                deleteDoc(doc(db, "Notas", nota.id));
+                nota.remove();
+            }
+            else{
+                //El usuario cancela borrar su nota
+                nota.style.left = posicionInicialX + "px";
+                nota.style.top = posicionInicialY + "px";
+            }
+            return;
+        }
+
+        if(Math.abs(distanciaX) < 5 && Math.abs(distanciaY) < 5){
+            const ahora = Date.now();
+            if(ahora - ultimoToque < 300){
+                abrirEdicion(nota);
+                ultimoToque = 0;
+            }
+            else{
+                ultimoToque = ahora;
+            }
+            return;
+        }
+        
         updateDoc(doc(db, "Notas", nota.id), {
             coordenadaX: nota.offsetLeft,
             coordenadaY: nota.offsetTop
@@ -179,6 +235,46 @@ async function guardarNotaEnFirebase(nota, texto){
         coordenadaY: nota.offsetTop,
         fechaCreacion: Date.now()
     });
+}
+
+function abrirEdicion(nota){
+    notaEditando = nota;
+    textoNota.value = nota.textContent;
+
+    //miramos el color de la nota que queremos editar
+    if(nota.classList.contains("amarillo")){
+        colorSeleccionado = "amarillo";
+        marcarColor(colorAmarillo);
+    }
+    if(nota.classList.contains("azul")){
+        colorSeleccionado = "azul";
+        marcarColor(colorAzul);
+    }
+    if(nota.classList.contains("verde")){
+        colorSeleccionado = "verde";
+        marcarColor(colorVerde);
+    }
+    if(nota.classList.contains("rojo")){
+        colorSeleccionado = "rojo";
+        marcarColor(colorRojo);
+    }
+
+    panelNota.classList.remove("oculto");
+
+}
+
+
+function guardarEdicionNota(texto){
+    notaEditando.textContent = texto;
+    notaEditando.className = `notas ${colorSeleccionado}`;
+
+    updateDoc(doc(db, "Notas", notaEditando.id),{
+        texto: texto,
+        color: colorSeleccionado
+    });
+    notaEditando = null;
+    panelNota.classList.add("oculto");
+    textoNota.value = "";
 }
 
 
