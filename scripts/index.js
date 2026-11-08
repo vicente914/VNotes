@@ -200,6 +200,7 @@ function hacerArrastrable(nota){
             return;
         }
 
+        //Con esta condicion permitimos añadir funcionalidad para editar la nota
         if(Math.abs(distanciaX) < 5 && Math.abs(distanciaY) < 5){
             const ahora = Date.now();
             if(ahora - ultimoToque < 300){
