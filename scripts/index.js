@@ -1,5 +1,4 @@
 //Import de firebase
-import {app, db} from './../protected/firebase_config.js';
 import { collection, doc, setDoc, updateDoc, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
 //APP VNOTES
 
@@ -173,6 +172,7 @@ function hacerArrastrable(nota){
 
     nota.addEventListener("touchmove", (e)=>{
         let toque = e.touches[0];
+        e.preventDefault();
         //posicion del dedo menos el punto donde agarramos la nota
         nota.style.left = (toque.clientX - offsetX) + "px";
         nota.style.top = (toque.clientY - headerHeight - offsetY) + "px";
@@ -189,7 +189,7 @@ function hacerArrastrable(nota){
         //SWIPE: se mide con recorrido horizontal rapido y poco recorrido vertical
         if(Math.abs(distanciaX) > 100 && Math.abs(distanciaY) < 30 && tiempo < 500){
             if(confirm("¿Seguro que quires borrar esta nota?")){
-                deleteDoc(doc(db, "Notas", nota.id));
+                deleteDoc(doc(db, "Usuario-"+user.uid, nota.id));
                 nota.remove();
             }
             else{
@@ -213,7 +213,7 @@ function hacerArrastrable(nota){
             return;
         }
         
-        updateDoc(doc(db, "Notas", nota.id), {
+        updateDoc(doc(db, "Usuario-"+user.uid, nota.id), {
             coordenadaX: nota.offsetLeft,
             coordenadaY: nota.offsetTop
         });
@@ -224,7 +224,7 @@ function hacerArrastrable(nota){
 //en nuestra base de datos
 async function guardarNotaEnFirebase(nota, texto){
     //Id unico de firestore
-    const referencia = doc(collection(db, "Notas"));
+    const referencia = doc(collection(db, "Usuario-"+user.uid));
     nota.id = referencia.id; //asi la nota tiene el mismo id que en la base de datos
 
     //Guardamos la nota con cada uno de sus campos
@@ -282,7 +282,8 @@ function guardarEdicionNota(texto){
 //funcionalidad que al abrir la pagina, leera las notas guardadas en la base de datos
 //y las cargara en la pagina
 async function cargarNotas(){
-    const resultado = await getDocs(collection(db, "Notas"));
+    console.log(user);
+    const resultado = await getDocs(collection(db, "Usuario-"+user.uid));
 
     resultado.forEach((documento)=>{
         const datos = documento.data();
@@ -299,4 +300,164 @@ async function cargarNotas(){
     });
 }
 
-cargarNotas();
+
+
+
+//Import the functions you need from the SDKs you need
+import { initializeApp } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
+import {
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/13.2.0/firebase-auth.js";
+  //TODO: Add SDKs for Firebase products that you want to use
+  //https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBEmNs2gpLART40CaIsm1n8-hzaW-iQ_IE",
+  authDomain: "vnotes-79e54.firebaseapp.com",
+  projectId: "vnotes-79e54",
+  storageBucket: "vnotes-79e54.firebasestorage.app",
+  messagingSenderId: "15522310869",
+  appId: "1:15522310869:web:ed75640f3eee980313505c",
+  measurementId: "G-NY5PC9QHDG"
+};
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const auth = getAuth(app);
+  const provider = new GoogleAuthProvider();
+  var user = null;
+
+  //exportamos lo que nuestro js publico necesita usar
+
+  export {app, db, auth};
+
+  //Elementos HTML
+  //const main = document.querySelector("main");
+  const panelSesion = document.getElementById("panelSesion");
+  const botonSesion = document.getElementById("sesion");
+  const errorSesion = document.getElementById("errorSesion");
+  const correo = document.getElementById("correo");
+  const password = document.getElementById("password");
+  
+
+// ---------- REGISTRO con correo y contraseña ----------
+document.getElementById("registrar").addEventListener("touchend", ()=>{
+  const email = correo.value;
+  const pass = password.value;
+
+  createUserWithEmailAndPassword(auth, email, pass)
+    .then((userCredential)=>{
+      // Signed up
+      user = userCredential.user;
+      console.log("Usuario registrado:", user.email);
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      errorSesion.textContent = errorCode;
+      console.log(errorMessage);
+    });
+});
+
+
+
+// ---------- LOGIN con correo y contraseña ----------
+document.getElementById("entrar").addEventListener("touchend", ()=>{
+  const email = correo.value;
+  const pass = password.value;
+
+  signInWithEmailAndPassword(auth, email, pass)
+    .then((userCredential) => {
+      // Signed in
+      user = userCredential.user;
+      console.log("Sesión iniciada:", user.email);
+      cargarNotas();
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      errorSesion.textContent = errorCode;
+      console.log(errorMessage);
+    });
+});
+
+
+
+// ---------- LOGIN con Google ----------
+document.getElementById("entrarGoogle").addEventListener("touchend", ()=>{
+  signInWithPopup(auth, provider)
+    .then((result) => {
+      // This gives you a Google Access Token. You can use it to access the Google API.
+      const credential = GoogleAuthProvider.credentialFromResult(result);
+      const token = credential.accessToken;
+      // The signed-in user info.
+      user = result.user;
+      console.log("Sesión con Google:", user.displayName, token);
+      cargarNotas();
+    })
+    .catch((error) => {
+      // Handle Errors here.
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      // The email of the user's account used (puede no existir en algunos errores).
+      const email = error.customData ? error.customData.email : null;
+      // The AuthCredential type that was used.
+      const credential = GoogleAuthProvider.credentialFromError(error);
+      errorSesion.textContent = errorCode;
+      console.log(errorMessage, email, credential);
+    });
+});
+
+
+// ---------- CERRAR SESIÓN ----------
+botonSesion.addEventListener("touchend", ()=>{
+  signOut(auth)
+    .then(() => {
+      // Sign-out successful.
+      console.log("Sesión cerrada");
+      user = null;
+      main.querySelectorAll("div").forEach(nota =>{
+        main.removeChild(nota);
+      });
+    })
+    .catch((error) => {
+      // An error happened.
+      console.log(error.code);
+    });
+});
+
+
+// ---------- ESTADO DE LA SESIÓN ----------
+// Firebase llama a esta función al cargar la página y cada vez que alguien entra o sale
+onAuthStateChanged(auth, usr =>{
+  if (usr){
+    // User is signed in
+    panelSesion.classList.add("oculto");
+    main.classList.remove("oculto");
+    botonSesion.classList.remove("oculto");
+    errorSesion.textContent = "";
+    correo.value = "";
+    password.value = "";
+  } 
+  else {
+    // Cuando el usuario cierra sesión
+    panelSesion.classList.remove("oculto");
+    main.classList.add("oculto");
+    botonSesion.classList.add("oculto");
+    user = null;
+    main.querySelectorAll("div").forEach(nota =>{
+        main.removeChild(nota);
+      });
+  }
+});

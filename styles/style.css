@@ -132,7 +132,8 @@ main{
 }
 
 /* Panel */
-#panelNota{
+#panelNota,
+#panelSesion{
     position: fixed;
     inset: 0;
     background-color: rgba(0,0,0,0.5);
@@ -140,10 +141,6 @@ main{
     justify-content: center;
     align-items: center;
     z-index: 100;
-}
-
-#panelNota.oculto{
-    display: none;
 }
 
 .panel-contenido{
@@ -199,4 +196,58 @@ main{
 #confirmarNota{
     background-color: var(--bg-button);
     color: var(--color-button);
+}
+
+
+/* Clase para ocultar cualquier cosa. !important hace que gane siempre */
+.oculto{
+    display: none !important;
+}
+
+/* Botón de cerrar sesión a la derecha de la cabecera */
+header{
+    position: relative;
+}
+
+#sesion{
+    position: absolute;
+    right: 16px;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 8px;
+    background-color: var(--bg-button);
+    color: var(--color-button);
+    font-weight: bold;
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+/* Formulario de sesión */
+.panel-contenido input{
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 1rem;
+}
+
+#errorSesion{
+    color: #c92a2a;
+    font-size: 0.9rem;
+    min-height: 1.2em;
+}
+
+#entrar{
+    background-color: var(--bg-button);
+    color: var(--color-button);
+}
+
+#registrar,
+#entrarGoogle{
+    padding: 8px 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: white;
+    font-weight: bold;
+    cursor: pointer;
 }

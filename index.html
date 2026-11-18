@@ -10,9 +10,10 @@
 <body>
     <header>
         <h1>VNotes - Your personal notes app</h1>
+        <button type="button" id="sesion" class="oculto">Cerrar sesion</button>
     </header>
 
-    <main>
+    <main class="oculto">
         <button id="crearNota">Crear Nota</button>
     </main>
 
@@ -32,6 +33,21 @@
                 <button type="button" id="cancelarNota">Cancelar</button>
                 <button type="button" id="confirmarNota">Crear</button>
             </div>
+        </div>
+    </div>
+
+    <div id="panelSesion" class="oculto">
+        <div class="panel-contenido">
+            <h2>Iniciar sesión</h2>
+            <input type="email" id="correo" placeholder="Correo electrónico">
+            <input type="password" id="password" placeholder="Contraseña (mín. 6 caracteres)">
+            <p id="errorSesion"></p>
+
+            <div class="panel-botones">
+                <button type="button" id="entrar">Entrar</button>
+                <button type="button" id="registrar">Registrarme</button>
+            </div>
+            <button type="button" id="entrarGoogle">Continuar con Google</button>
         </div>
     </div>
 </body>
