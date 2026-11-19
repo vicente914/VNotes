@@ -7,6 +7,7 @@ const crearNota = document.getElementById("crearNota");
 const main = document.querySelector("main");
 let idNota = 0;
 let notaEditando = null;
+let cargando = false;
 
 /*Pantalla oculta que se muestra al crear una nota
 te deja escoger entre 4 colores y escribir el texto para tu nota*/
@@ -281,23 +282,27 @@ function guardarEdicionNota(texto){
 
 //funcionalidad que al abrir la pagina, leera las notas guardadas en la base de datos
 //y las cargara en la pagina
+const iniciarSesion = document.getElementById("entrar");
 async function cargarNotas(){
-    console.log(user);
-    const resultado = await getDocs(collection(db, "Usuario-"+user.uid));
+    if(!cargando){
+        cargando = true;
+        console.log(user);
+        const resultado = await getDocs(collection(db, "Usuario-"+user.uid));
 
-    resultado.forEach((documento)=>{
-        const datos = documento.data();
+        resultado.forEach((documento)=>{
+            const datos = documento.data();
 
-        const nota = document.createElement("div");
-        nota.id = datos.id;
-        nota.className = `notas ${datos.color}`;
-        nota.textContent = datos.texto;
-        nota.style.left = datos.coordenadaX + "px";
-        nota.style.top = datos.coordenadaY + "px";
-        main.appendChild(nota);
+            const nota = document.createElement("div");
+            nota.id = datos.id;
+            nota.className = `notas ${datos.color}`;
+            nota.textContent = datos.texto;
+            nota.style.left = datos.coordenadaX + "px";
+            nota.style.top = datos.coordenadaY + "px";
+            main.appendChild(nota);
 
-        hacerArrastrable(nota);
-    });
+            hacerArrastrable(nota);
+        });
+    }
 }
 
 
@@ -426,6 +431,7 @@ botonSesion.addEventListener("touchend", ()=>{
     .then(() => {
       // Sign-out successful.
       console.log("Sesión cerrada");
+      cargando = false;//CUando cerramos sesion, dejamos la variable cargando en false
       user = null;
       main.querySelectorAll("div").forEach(nota =>{
         main.removeChild(nota);
